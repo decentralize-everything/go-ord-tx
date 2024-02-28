@@ -2,12 +2,13 @@ package btcapi
 
 import (
 	"fmt"
+	"io"
+	"net/http"
+
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/pkg/errors"
-	"io"
-	"net/http"
 )
 
 type UnspentOutput struct {
@@ -18,7 +19,7 @@ type UnspentOutput struct {
 type BTCAPIClient interface {
 	GetRawTransaction(txHash *chainhash.Hash) (*wire.MsgTx, error)
 	BroadcastTx(tx *wire.MsgTx) (*chainhash.Hash, error)
-	ListUnspent(address btcutil.Address) ([]*UnspentOutput, error)
+	ListUnspent(address btcutil.Address, includeUnconfirmed bool) ([]*UnspentOutput, error)
 }
 
 func Request(method, baseURL, subPath string, requestBody io.Reader) ([]byte, error) {

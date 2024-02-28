@@ -1,9 +1,10 @@
 package mempool
 
 import (
+	"testing"
+
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
-	"testing"
 )
 
 func TestListUnspent(t *testing.T) {
@@ -11,7 +12,7 @@ func TestListUnspent(t *testing.T) {
 	netParams := &chaincfg.SigNetParams
 	client := NewClient(netParams)
 	address, _ := btcutil.DecodeAddress("tb1p8lh4np5824u48ppawq3numsm7rss0de4kkxry0z70dcfwwwn2fcspyyhc7", netParams)
-	unspentList, err := client.ListUnspent(address)
+	unspentList, err := client.ListUnspent(address, true)
 	if err != nil {
 		t.Error(err)
 	} else {

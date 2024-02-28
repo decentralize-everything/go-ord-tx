@@ -3,11 +3,12 @@ package mempool
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/vincentdebug/go-ord-tx/pkg/btcapi"
-	"net/http"
 )
 
 type UTXO struct {
@@ -25,7 +26,7 @@ type UTXO struct {
 // UTXOs is a slice of UTXO
 type UTXOs []UTXO
 
-func (c *MempoolClient) ListUnspent(address btcutil.Address) ([]*btcapi.UnspentOutput, error) {
+func (c *MempoolClient) ListUnspent(address btcutil.Address, includeUnconfirmed bool) ([]*btcapi.UnspentOutput, error) {
 	res, err := c.request(http.MethodGet, fmt.Sprintf("/address/%s/utxo", address.EncodeAddress()), nil)
 	if err != nil {
 		return nil, err
@@ -43,6 +44,11 @@ func (c *MempoolClient) ListUnspent(address btcutil.Address) ([]*btcapi.UnspentO
 		if err != nil {
 			return nil, err
 		}
+
+		if !includeUnconfirmed && !utxo.Status.Confirmed {
+			continue
+		}
+
 		unspentOutputs = append(unspentOutputs, &btcapi.UnspentOutput{
 			Outpoint: wire.NewOutPoint(txHash, uint32(utxo.Vout)),
 			Output:   wire.NewTxOut(utxo.Value, address.ScriptAddress()),
