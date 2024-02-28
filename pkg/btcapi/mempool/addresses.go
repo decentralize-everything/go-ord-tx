@@ -50,8 +50,9 @@ func (c *MempoolClient) ListUnspent(address btcutil.Address, includeUnconfirmed 
 		}
 
 		unspentOutputs = append(unspentOutputs, &btcapi.UnspentOutput{
-			Outpoint: wire.NewOutPoint(txHash, uint32(utxo.Vout)),
-			Output:   wire.NewTxOut(utxo.Value, address.ScriptAddress()),
+			Outpoint:  wire.NewOutPoint(txHash, uint32(utxo.Vout)),
+			Output:    wire.NewTxOut(utxo.Value, address.ScriptAddress()),
+			Confirmed: utxo.Status.Confirmed,
 		})
 	}
 	return unspentOutputs, nil

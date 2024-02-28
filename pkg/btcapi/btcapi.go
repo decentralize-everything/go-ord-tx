@@ -12,8 +12,9 @@ import (
 )
 
 type UnspentOutput struct {
-	Outpoint *wire.OutPoint
-	Output   *wire.TxOut
+	Outpoint  *wire.OutPoint
+	Output    *wire.TxOut
+	Confirmed bool
 }
 
 type BTCAPIClient interface {
